@@ -35,4 +35,5 @@ else
   echo "silabasREV.txt (FAILED)"
 fi
 
-
+rm temp
+rm dump
