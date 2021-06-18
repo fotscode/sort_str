@@ -1,0 +1,1 @@
+WARNING: `-r`,`-s` and `-o` will be ignored

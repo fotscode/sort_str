@@ -1,0 +1,1 @@
+../main: error: `-r` and `-s` flags where set at the same time
