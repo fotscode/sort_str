@@ -5,9 +5,14 @@
 void help(char *filename){
   printf("Usage: %s [OPTIONS]...\n",filename);
   FILE *help=fopen("help.txt","r");
+  if (!help){
+    my_close(help,stdout);
+    fprintf(stderr,"%s: help.txt : Error opening file",filename);
+    exit(ERROR_FILE);
+  }
   char s[BUFSIZ]="\0";
   while (fgets(s,sizeof(s),help)) printf("%s",s);
-  exit(EXIT_SUCCESS);
+  my_close(help,stdout);
 }
 
 void my_close(FILE *in,FILE *out){

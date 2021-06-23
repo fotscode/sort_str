@@ -13,7 +13,8 @@ str_vector_t str_vector_new(){
 }
 
 void str_vector_append(str_vector_t *vector, char *string){
-  str_vector_resize(vector,vector->size+1); vector->data[vector->size-1]=string;
+  str_vector_resize(vector,vector->size+1); 
+  vector->data[vector->size-1]=string;
 }
 
 void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode mode){
@@ -77,17 +78,19 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
       }
     case (RANDOM): 
       {
-        str_vector_sort(vector,INVERTED); // me aseguro que este ordenado
-        srand(getpid());
-        //filtro los repetidos
+        srand(getpid()); // sets random seed to be different every time
+        str_vector_sort(vector,INVERTED); // sorts in case it wasn't sorted
+        // filter repeated strings
         char aux_str[BUFSIZ]="\0";
         int i;
         for (i=0;i<vector->size;i++){ 
           if (strcmp(aux_str,vector->data[i])){
             str_vector_append(&aux_vec,str_vector_get(vector,i));
-          }
-          strcpy(aux_str,vector->data[i]);
+            strcpy(aux_str,vector->data[i]);
+          }else
+            free(str_vector_get(vector,i)); // free repeated strings
         }
+        // permutation
         for (i=1;i<aux_vec.size;i++){
           swap(i,rand() % i,&aux_vec);
         }

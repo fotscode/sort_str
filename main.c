@@ -29,6 +29,8 @@ int main(int argc, char *argv[]){
       case 'h':
       {
         help(argv[0]);
+        my_close(in,out);
+        exit(EXIT_SUCCESS);
         break;
       }
       case 'i':
