@@ -1,0 +1,12 @@
+Sorts <INPUT_FILE> lines to <OUTPUT_FILE>
+
+  -i, --input  <INPUT_FILE>      reads from INPUT_FILE
+  -o, --output <OUTPUT_FILE>     writes on OUTPUT_FILE
+  -r, --reverse                  inverts sort condition
+  -s, --shuffle                  randomly sorts strings
+  -c, --count                    counts lines from file
+  -h, --help                     displays this text
+
+If -r or -s were not specified the file it's sorted by ASCII order
+With no <INPUT_FILE> specified, reads standard input
+With no <OUTPUT_FILE> specified, writes on standard output

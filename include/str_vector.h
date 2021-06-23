@@ -1,6 +1,9 @@
 #ifndef H_STR_VECTOR
 #define H_STR_VECTOR
 
+#include <stddef.h>
+#include "file_functions.h"
+
 typedef struct {
   size_t size;
   char **data;
@@ -15,16 +18,16 @@ enum sort_mode { SEQ , INVERTED , RANDOM };
  
 // Retorna el elemento en la posición index del vector, si la
 // posición index no existe retorna NULL.
-// PREGUNTA: recibe vector como puntero o como struct?
 #define str_vector_get(vector, index) \
-  (index>=0&&index<vector.size) ? vector.data[index] : NULL
+  (index>=0&&index<(vector)->size) ? (vector)->data[index] : NULL
 
 
 // Guarda el elemento en la posición index del vector
+// CAMBIAR EXIT
 #define str_vector_set(vector, index, elemento) \
-  if (index<0) {fprintf(stderr,"Non valid index\n"); exit(EXIT_FAILURE); } \
-  else if (index>vector.size) str_vector_resize(&vector,(index)+1)\
-  vector.data[index]=elemento
+  if (index<0) {fprintf(stderr,"Non valid index\n"); exit(ERROR_INDEX); } \
+  else if ((index)>(vector)->size) {str_vector_resize((vector),(index)+1);}\
+  (vector)->data[index]=elemento
 
 
 /******************************************************************
@@ -43,7 +46,6 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,
 enum sort_mode mode);
 
 // Redimensiona el vector para contener `elements` elementos.
-// QUE DEVOLVER?? antes decia char *
 void str_vector_resize(str_vector_t *vector, unsigned elements);
 
 // Ordena el vector de acuerdo a el modo elegido.

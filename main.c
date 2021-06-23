@@ -1,65 +1,9 @@
+#include "include/str_vector.h"
+#include "include/str_vector_expanded.h"
+#include "include/file_functions.h"
 #include <stdio.h>
-#include "str_vector.h"
 #include <stdlib.h>
 #include <getopt.h>
-#include <string.h>
-
-// estos define van aca, no en el .h, no?
-#define ERROR_FILE 1 // exit code when opening a file fails
-#define ERROR_CONFLICT 2 // exit code when there's a conflict of orders
-
-#define STRING_SIZE 512
-
-void help(char *filename){
-  printf("Usage: %s [OPTIONS]...\n",filename);
-  puts("Sorts FILE lines to output FILE\n");
-  puts("\t-i, --input  <INPUT_FILE>\treads from INPUT_FILE");
-  puts("\t-o, --output <OUTPUT_FILE>\twrites on OUTPUT_FILE");
-  puts("\t-r, --reverse\tinverts sort condition");
-  puts("\t-s, --shuffle\trandomly sorts strings");
-  puts("\t-c, --count\tcounts lines from file");
-  puts("\t-h, --help\tdisplays this text\n");
-  puts("If -r or -s were not specified the files it's sorted by ASCII order");
-  puts("With no -i <INPUT_FILE> specified, reads standard input");
-  puts("With no -o <OUTPUT_FILE> specified, writes on standard output");
-  exit(EXIT_SUCCESS);
-}
-
-void myclose(FILE *in,FILE *out){
-  if (in!=stdin) fclose(in);
-  if (out!=stdout) fclose(out);
-}
-
-int count_lines(FILE *in){
-  int c=0;
-  char s[BUFSIZ]="\0";
-  while (fgets(s,sizeof(s),in)) c++;
-  return c;
-}
-
-void create_str_vec(str_vector_t *vector,FILE *in){
-  // debo alocar mem para cada string
-  char aux[BUFSIZ];
-  while (fgets(aux,sizeof(char)*STRING_SIZE,in)){
-    char *s=malloc(sizeof(char)*STRING_SIZE);
-    strcpy(s,aux); // que otra forma en vez de esto?!?
-    str_vector_append_sorted(vector,s,SEQ);
-  }
-}
-
-void print_str_vec(str_vector_t vector,FILE *out){
-  int i;
-  for (i=0;i<vector.size;i++) {
-    fputs(vector.data[i],out);
-  }
-}
-
-void free_strings(str_vector_t *vector){
-  int i;
-  for(i=0;i<vector->size;i++){
-    free(vector->data[i]);
-  }
-}
 
 int main(int argc, char *argv[]){
   FILE *in=stdin;
@@ -91,7 +35,7 @@ int main(int argc, char *argv[]){
       {
         in=fopen(optarg,"r");
         if (!in){
-          myclose(stdin,out);
+          my_close(stdin,out);
           fprintf(stderr,"%s: %s: Error opening file",argv[0],optarg);
           exit(ERROR_FILE);
         }
@@ -101,7 +45,7 @@ int main(int argc, char *argv[]){
       {
         out=fopen(optarg,"w");
         if (!out){
-          myclose(in,stdout);
+          my_close(in,stdout);
           fprintf(stderr,"%s: %s: Error opening file",argv[0],optarg);
           exit(ERROR_FILE);
         }
@@ -130,26 +74,27 @@ int main(int argc, char *argv[]){
       fprintf(stderr,"WARNING: `-r`,`-s` and `-o` will be ignored\n");
     }
     printf("lines: %d\n",count_lines(in));
+    my_close(in,out);
     exit(EXIT_SUCCESS);
   }
 
   if (rever_flag&&shuff_flag){
     fprintf(stderr,"%s: error: `-r` and `-s` flags where set at the same time\n",argv[0]);
-    myclose(in,out);
+    my_close(in,out);
     exit(ERROR_CONFLICT);
   }
 
   str_vector_t vec=str_vector_new();
-  create_str_vec(&vec,in); // inits vec with data from in
+  str_vector_create(&vec,in); // inits vec with data from in
   if (rever_flag){
     str_vector_sort(&vec,INVERTED);
   }
   if (shuff_flag){
     str_vector_sort(&vec,RANDOM);
   }
-  print_str_vec(vec,out);
-  myclose(in,out);
-  free_strings(&vec); // lo debe hacer el str_vector_free a esto?
+  str_vector_print(vec,out);
+  my_close(in,out);
+  str_vector_free_all_str(&vec);
   str_vector_free(&vec);
   return 0;
 }
