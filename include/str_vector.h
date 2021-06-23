@@ -23,10 +23,9 @@ enum sort_mode { SEQ , INVERTED , RANDOM };
 
 
 // Guarda el elemento en la posición index del vector
-// CAMBIAR EXIT
 #define str_vector_set(vector, index, elemento) \
   if (index<0) {fprintf(stderr,"Non valid index\n"); exit(ERROR_INDEX); } \
-  else if ((index)>(vector)->size) {str_vector_resize((vector),(index)+1);}\
+  else if ((index)>=(vector)->size) {str_vector_resize((vector),(index)+1);}\
   (vector)->data[index]=elemento
 
 
