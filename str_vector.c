@@ -23,7 +23,7 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode 
       break;
     case (SEQ):
       {
-        str_vector_resize(vector,vector->size+1);
+        str_vector_resize(vector,vector->size+1); 
         int i,j;
         for (i=0; i<vector->size-1 && strcmp(vector->data[i],string)<0 ;i++);
         for (j=vector->size-1; j>i;j--) {
@@ -34,7 +34,7 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode 
       }
     case (INVERTED):
       {
-        str_vector_resize(vector,vector->size+1);
+        str_vector_resize(vector,vector->size+1); 
         int i,j;
         for (i=0; i<vector->size-1 && strcmp(vector->data[i],string)>0 ;i++);
         for (j=vector->size-1; j>i;j--) {
@@ -69,10 +69,9 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
       break;
     case (INVERTED):
       {
-        str_vector_resize(&aux_vec,vector->size);
         int i;
         for (i=vector->size-1; i>=0; i--){
-          str_vector_set(&aux_vec,vector->size-1-i,str_vector_get(vector,i));
+          str_vector_append_sorted(&aux_vec,str_vector_get(vector,i),INVERTED);
         }
         break;
       }
