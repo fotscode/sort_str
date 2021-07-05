@@ -16,13 +16,13 @@ void str_vector_create(str_vector_t *vector,FILE *in){
 void str_vector_print(str_vector_t vector,FILE *out){
   int i;
   for (i=0;i<vector.size;i++) {
-    fputs(vector.data[i],out);
+    fputs(str_vector_get(&vector,i),out);
   }
 }
 
 void str_vector_free_all_str(str_vector_t *vector){
   int i;
   for(i=0;i<vector->size;i++){
-    free(vector->data[i]);
+    free(str_vector_get(vector,i));
   }
 }

@@ -14,7 +14,7 @@ str_vector_t str_vector_new(){
 
 void str_vector_append(str_vector_t *vector, char *string){
   str_vector_resize(vector,vector->size+1); 
-  vector->data[vector->size-1]=string;
+  str_vector_set(vector,vector->size-1,string);
 }
 
 void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode mode){
@@ -25,7 +25,7 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode 
       {
         str_vector_resize(vector,vector->size+1); 
         int i,j;
-        for (i=0; i<vector->size-1 && strcmp(vector->data[i],string)<0 ;i++);
+        for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)<0 ;i++);
         for (j=vector->size-1; j>i;j--) {
           str_vector_set(vector,j,str_vector_get(vector,j-1));
         }
@@ -36,7 +36,7 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode 
       {
         str_vector_resize(vector,vector->size+1); 
         int i,j;
-        for (i=0; i<vector->size-1 && strcmp(vector->data[i],string)>0 ;i++);
+        for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)>0 ;i++);
         for (j=vector->size-1; j>i;j--) {
           str_vector_set(vector,j,str_vector_get(vector,j-1));
         }
@@ -83,9 +83,9 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
         char aux_str[BUFSIZ]="\0";
         int i;
         for (i=0;i<vector->size;i++){ 
-          if (strcmp(aux_str,vector->data[i])){
+          if (strcmp(aux_str,(str_vector_get(vector,i)))){
             str_vector_append(&aux_vec,str_vector_get(vector,i));
-            strcpy(aux_str,vector->data[i]);
+            strcpy(aux_str,str_vector_get(vector,i));
           }else
             free(str_vector_get(vector,i)); // free repeated strings
         }
