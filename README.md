@@ -1,5 +1,7 @@
 # sort_str
 
+![github repo](https://github.com/fotscode/sort_str)
+
 ## Compilacion
 
 gcc main.c str_vector.c str_vector_expanded.c file_functions.c -o main -Wno-nonnull -Wall
