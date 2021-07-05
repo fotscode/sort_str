@@ -17,26 +17,31 @@ void str_vector_append(str_vector_t *vector, char *string){
   str_vector_set(vector,vector->size-1,string);
 }
 
+static int search_place(str_vector_t *vector, char *string, enum sort_mode mode){
+  int i;
+  switch(mode){
+    case (RANDOM):
+      break;
+    case (SEQ):
+      for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string) < 0 ;i++);
+      break;
+    case (INVERTED):
+      for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)>0 ;i++);
+      break;
+  }
+  return i;
+}
+
 void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode mode){
   switch (mode){
     case (RANDOM): 
       break;
     case (SEQ):
-      {
-        str_vector_resize(vector,vector->size+1); 
-        int i,j;
-        for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)<0 ;i++);
-        for (j=vector->size-1; j>i;j--) {
-          str_vector_set(vector,j,str_vector_get(vector,j-1));
-        }
-        str_vector_set(vector,i,string);
-        break;
-      }
     case (INVERTED):
       {
         str_vector_resize(vector,vector->size+1); 
-        int i,j;
-        for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)>0 ;i++);
+        int j;
+        int i=search_place(vector,string,mode);
         for (j=vector->size-1; j>i;j--) {
           str_vector_set(vector,j,str_vector_get(vector,j-1));
         }
