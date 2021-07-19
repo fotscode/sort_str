@@ -28,8 +28,8 @@ int main(int argc, char *argv[]){
     switch(o){
       case 'h':
       {
-        help(argv[0]);
         my_close(in,out);
+        help(argv[0]);
         exit(EXIT_SUCCESS);
         break;
       }
@@ -86,7 +86,7 @@ int main(int argc, char *argv[]){
     exit(ERROR_CONFLICT);
   }
 
-  str_vector_t vec=str_vector_new();
+  str_vector_t vec;
   str_vector_create(&vec,in); // inits vec with data from in
   if (rever_flag){
     str_vector_sort(&vec,INVERTED);
