@@ -13,6 +13,11 @@ str_vector_t str_vector_new(){
 }
 
 void str_vector_append(str_vector_t *vector, char *string){
+  if (!string){
+    fprintf(stderr,"WARNING: string is equal to NULL, vector wasn't modified\n");
+    return;
+  }
+  if (!vector) *vector=str_vector_new();
   str_vector_resize(vector,vector->size+1); 
   str_vector_set(vector,vector->size-1,string);
 }
@@ -21,6 +26,8 @@ static int search_place(str_vector_t *vector, char *string, enum sort_mode mode)
   int i;
   switch(mode){
     case (RANDOM):
+      fprintf(stderr,"WARNING: RANDOM is not a valid mode, -1 is returned\n");
+      return -1;
       break;
     case (SEQ):
       for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string) < 0 ;i++);
@@ -33,6 +40,11 @@ static int search_place(str_vector_t *vector, char *string, enum sort_mode mode)
 }
 
 void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode mode){
+  if (!string){
+    fprintf(stderr,"WARNING: string is equal to NULL, vector wasn't modified\n");
+    return;
+  }
+  if (!vector) *vector=str_vector_new();
   switch (mode){
     case (RANDOM): 
       break;
@@ -48,9 +60,6 @@ void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode 
         str_vector_set(vector,i,string);
         break; 
       }
-    default:
-      fprintf(stderr,"Unknown mode\n");
-      break;
   }
 }
 
@@ -66,8 +75,7 @@ static void swap(int i,int j,str_vector_t *vec){
 }
 
 void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
-  if(vector->size<2) return;
-  str_vector_t aux_vec=str_vector_new();
+  if(!vector||vector->size<2) return;
   switch(mode){
     case (SEQ): 
       return;
@@ -75,37 +83,41 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
     case (INVERTED):
       {
         int i;
-        for (i=vector->size-1; i>=0; i--){
-          str_vector_append_sorted(&aux_vec,str_vector_get(vector,i),INVERTED);
+        char aux[STRING_SIZE];
+        for (i=0; i<vector->size/2;i++){
+          strcpy(aux,str_vector_get(vector,i));
+          swap(i,vector->size-1-i,vector);
         }
         break;
       }
     case (RANDOM): 
       {
+        // assumes vector was sorted as SEQ
         srand(getpid()); // sets random seed to be different every time
-        str_vector_sort(vector,INVERTED); // sorts in case it wasn't sorted
-        // filter repeated strings
-        char aux_str[BUFSIZ]="\0";
-        int i;
-        for (i=0;i<vector->size;i++){ 
-          if (strcmp(aux_str,(str_vector_get(vector,i)))){
-            str_vector_append(&aux_vec,str_vector_get(vector,i));
-            strcpy(aux_str,str_vector_get(vector,i));
-          }else
-            free(str_vector_get(vector,i)); // free repeated strings
+        int i=0;
+        int j,count_elim;
+        while(i<vector->size-1){
+          count_elim=0;
+          j=i;
+          while (j<vector->size-1&&!strcmp(str_vector_get(vector,i),str_vector_get(vector,j+1))){
+            count_elim++;
+            j++;
+            free(str_vector_get(vector,j)); // frees repeated strings
+          }
+          if (count_elim){
+            for (j=i+1;j<vector->size-count_elim;j++){
+              str_vector_set(vector,j,str_vector_get(vector,j+count_elim));
+            }
+            str_vector_resize(vector,vector->size-count_elim);
+          }
+          i++;
         }
-        // permutation
-        for (i=1;i<aux_vec.size;i++){
-          swap(i,rand() % i,&aux_vec);
+        for (i=1;i<vector->size;i++){
+          swap(i,rand() % i,vector);
         }
+        break;
       }
-      break;
-    default:
-      fprintf(stderr,"Unknown mode\n"); 
-      break;
   }
-  str_vector_free(vector);
-  *vector=aux_vec;
 }
 
 void str_vector_free(str_vector_t *vector){
