@@ -25,8 +25,9 @@ void str_vector_print(str_vector_t vector,FILE *out){
   }
   int i;
   for (i=0;i<vector.size;i++) {
-    if(str_vector_get(&vector,i))
+    if(str_vector_get(&vector,i)){
       fputs(str_vector_get(&vector,i),out);
+    }
   }
 }
 

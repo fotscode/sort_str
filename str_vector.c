@@ -13,11 +13,10 @@ str_vector_t str_vector_new(){
 }
 
 void str_vector_append(str_vector_t *vector, char *string){
-  if (!string){
-    fprintf(stderr,"WARNING: string is equal to NULL, vector wasn't modified\n");
+  if (!string||!vector){
+    fprintf(stderr,"WARNING: string or vector were equal to NULL, vector wasn't modified\n");
     return;
   }
-  if (!vector) *vector=str_vector_new();
   str_vector_resize(vector,vector->size+1); 
   str_vector_set(vector,vector->size-1,string);
 }
@@ -40,11 +39,10 @@ static int search_place(str_vector_t *vector, char *string, enum sort_mode mode)
 }
 
 void str_vector_append_sorted(str_vector_t *vector, char *string,enum sort_mode mode){
-  if (!string){
-    fprintf(stderr,"WARNING: string is equal to NULL, vector wasn't modified\n");
+  if (!string||!vector){
+    fprintf(stderr,"WARNING: string or vector were equal to NULL, vector wasn't modified\n");
     return;
   }
-  if (!vector) *vector=str_vector_new();
   switch (mode){
     case (RANDOM): 
       break;

@@ -28,8 +28,8 @@ int main(int argc, char *argv[]){
     switch(o){
       case 'h':
       {
-        my_close(in,out);
         help(argv[0]);
+        my_close(in,out);
         exit(EXIT_SUCCESS);
         break;
       }
