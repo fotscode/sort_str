@@ -5,8 +5,8 @@
 #include <string.h>
 
 void str_vector_create(str_vector_t *vector,FILE *in){
-  if (!in) {
-    fprintf(stderr,"WARNING: file is equal to NULL, vector wasn't created\n");
+  if (!in||!vector) {
+    fprintf(stderr,"WARNING: file or vector were equal to NULL, vector wasn't created\n");
     return;
   }
   *vector=str_vector_new();
@@ -32,11 +32,15 @@ void str_vector_print(str_vector_t vector,FILE *out){
 }
 
 void str_vector_free_all_str(str_vector_t *vector){
+  if (!vector){
+    fprintf(stderr,"WARNING: vector is equal to NULL, no strings were freed\n");
+    return;
+  }
   int i;
   for(i=0;i<vector->size;i++){
     if (str_vector_get(vector,i)){
       free(str_vector_get(vector,i));
-      str_vector_set(vector,i,NULL);
     }
   }
+  str_vector_free(vector);
 }
