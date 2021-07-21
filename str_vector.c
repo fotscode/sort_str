@@ -13,8 +13,8 @@ str_vector_t str_vector_new(){
 }
 
 void str_vector_append(str_vector_t *vector, char *string){
-  if (!string||!vector){
-    fprintf(stderr,"WARNING: string or vector were equal to NULL, vector wasn't modified\n");
+  if (!vector){
+    fprintf(stderr,"WARNING: vector is equal to NULL, vector wasn't modified\n");
     return;
   }
   str_vector_resize(vector,vector->size+1); 
@@ -32,7 +32,7 @@ static int search_place(str_vector_t *vector, char *string, enum sort_mode mode)
       for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string) < 0 ;i++);
       break;
     case (INVERTED):
-      for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string)>0 ;i++);
+      for (i=0; i<vector->size-1 && strcmp(str_vector_get(vector,i),string) > 0 ;i++);
       break;
   }
   return i;
@@ -80,17 +80,19 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
       break;
     case (INVERTED):
       {
+        // assumes vector was created with SEQ mode
         int i;
         char aux[STRING_SIZE];
+        // swaps first and last, second and before last, etc
         for (i=0; i<vector->size/2;i++){
           strcpy(aux,str_vector_get(vector,i));
-          swap(i,vector->size-1-i,vector);
+          swap(i,vector->size-1-i,vector); 
         }
         break;
       }
     case (RANDOM): 
       {
-        // assumes vector was sorted as SEQ
+        // assumes vector was created with SEQ mode
         srand(getpid()); // sets random seed to be different every time
         int i=0;
         int j,count_elim;
@@ -103,8 +105,8 @@ void str_vector_sort(str_vector_t *vector, enum sort_mode mode){
             free(str_vector_get(vector,j)); // frees repeated strings
           }
           if (count_elim){
-            for (j=i+1;j<vector->size-count_elim;j++){
-              str_vector_set(vector,j,str_vector_get(vector,j+count_elim));
+            for (j=i+1;j<vector->size-count_elim;j++){  // shifting
+              str_vector_set(vector,j,str_vector_get(vector,j+count_elim)); 
             }
             str_vector_resize(vector,vector->size-count_elim);
           }

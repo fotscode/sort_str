@@ -97,6 +97,5 @@ int main(int argc, char *argv[]){
   str_vector_print(vec,out);
   my_close(in,out);
   str_vector_free_all_str(&vec);
-  str_vector_free(&vec);
   return 0;
 }
