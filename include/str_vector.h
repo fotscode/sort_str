@@ -2,6 +2,7 @@
 #define H_STR_VECTOR
 
 #include <stddef.h>
+#include <stdlib.h>
 #include "file_functions.h"
 
 typedef struct {

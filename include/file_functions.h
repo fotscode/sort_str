@@ -12,10 +12,10 @@
 // displays help text
 void help(char *filename);
 
-// closes in and out if they're not stdin nor stdout respectively
+// closes in and out if they're not null
 void my_close(FILE *in,FILE *out);
 
-// returns file's number of lines
+// returns file's number of lines, returns 0 if in is null
 int count_lines(FILE *in);
 
 #endif
